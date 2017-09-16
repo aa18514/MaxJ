@@ -1,0 +1,31 @@
+
+// simple parameterized add scalar
+
+
+package dotproduct;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel; 
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters; 
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType; 
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar; 
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType; 
+
+class DotProductKernel extends Kernel {
+	private static final DFEType type = dfeInt(32); 
+	
+
+	protected DotProductKernel(KernelParameters parameters, int streamWidth) {
+		super(parameters);
+
+		DFEVectorType<DFEVar> vectortype = new DFEVectorType<DFEVar>(type, streamWidth); 
+
+		DFEVector<DFEVar> x = io.input("x", vectortype); 
+		DFEVector<DFEVar> y = io.input("y", vectortype); 
+		DFEVar sum = constant.var(type, 0); 
+		for(int i = 0; i < streamWidth; i++){
+			sum += x[i]*y[i]; 
+		}
+		io.output("s", sum, type); 
+	}
+}
